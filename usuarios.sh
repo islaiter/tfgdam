@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo adduser maniana:Maniana@1234 | chpasswd
-sudo adduser tarde:Tarde@1234 | chpasswd
+sudo useradd -m -p maniana1234 maniana
+sudo useradd -m -p tarde1234 tarde
