@@ -18,7 +18,7 @@ sed -i "s/dhcp4: yes/dhcp4: no/g" /etc/netplan/01-netcfg.yaml
 
 # Obtenemos la informacion de la tarjeta de red
 
-nic=`ifconfig | awk 'NR==1{print $1}'`
+nic=`ip addr | awk 'NR==7{print $2}'`
 
 # Pedimos por teclado la configuracion de red
 
