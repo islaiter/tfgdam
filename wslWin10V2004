@@ -1,0 +1,1 @@
+start cmd.exe /c wsl.exe –install
