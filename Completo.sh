@@ -47,8 +47,10 @@ echo “-----------------”
 
 echo “Creando usuarios…”
 
-sudo adduser maniana:Maniana@1234 | chpasswd
-sudo adduser tarde:Tarde@1234 | chpasswd
+# Creando los usuarios con useradd en vez de con adduser crea los usuarios para que sean compatibles con Samba por si hiciese falta por lo que sea, que lo dudo
+
+sudo useradd -m -p maniana1234 maniana
+sudo useradd -m -p tarde1234 tarde
 
 echo “Usuarios creados correctamente”
 
