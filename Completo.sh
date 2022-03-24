@@ -89,6 +89,10 @@ echo “maniana ALL=(root) NOPASSWD: /usr/bin/docker-compose -H unix:///var/run/
 
 echo “tarde ALL=(root) NOPASSWD: /usr/bin/docker-compose -H unix:///var/run/docker-tarde.sock *” >> /etc/sudoers
 
+# Esto hay que automatizarlo
+# Para obtener el id de un usuario: echo $(sudo id -u usuario)
+# Para obtener el grupo de un usuario: echo $(sudo id -g usuario)
+
 echo “Archivo sudoers configurado correctamente”
 
 echo “Configurando el archivo subuid…”
