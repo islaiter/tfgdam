@@ -98,18 +98,18 @@ echo “Archivo sudoers configurado correctamente”
 echo “Configurando el archivo subuid…”
 
 echo “maniana:1002:1” >> /etc/subuid
-echo “maniana:100000:65536” >> /etc/subuid 
+echo “maniana:165536:65536” >> /etc/subuid 
 echo “tarde:1003:1” >> /etc/subuid
-echo “tarde:165536:65536” >> /etc/subuid
+echo “tarde:231072:65536” >> /etc/subuid
 
 echo “subuid configurado correctamente”
 
 echo “Configurando el archivo subgid…”
 
 echo “maniana:1002:1” >> /etc/subgid
-echo “maniana:100000:65536” >> /etc/subgid 
+echo “maniana:165536:65536” >> /etc/subgid 
 echo “tarde:1003:1” >> /etc/subgid
-echo “tarde:165536:65536” >> /etc/subgid
+echo “tarde:231072:65536” >> /etc/subgid
 
 echo “subgid configurado correctamente”
 
