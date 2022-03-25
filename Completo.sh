@@ -96,22 +96,25 @@ echo “Archivo sudoers configurado correctamente”
 
 echo “Configurando el archivo subuid…”
 
-echo “maniana:1002:1” >> /etc/subuid
-echo “maniana:165536:65536” >> /etc/subuid 
-echo “tarde:1003:1” >> /etc/subuid
-echo “tarde:231072:65536” >> /etc/subuid
+
+#echo “maniana:165536:65536” >> /etc/subuid
+#echo “tarde:231072:65536” >> /etc/subuid
+
+echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subuid
+echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subuid
+
 
 echo “subuid configurado correctamente”
 
 echo “Configurando el archivo subgid…”
 
-echo “maniana:1002:1” >> /etc/subgid
-echo “maniana:165536:65536” >> /etc/subgid 
-echo “tarde:1003:1” >> /etc/subgid
-echo “tarde:231072:65536” >> /etc/subgid
+#echo “maniana:165536:65536” >> /etc/subgid 
+#echo “tarde:231072:65536” >> /etc/subgid
+
+echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subgid
+echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subgid
 
 echo “subgid configurado correctamente”
-
 echo “Creando y configurando archivo para el socket de docker…”
 
 touch /etc/systemd/system/docker@.service
