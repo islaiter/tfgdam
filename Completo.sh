@@ -81,13 +81,12 @@ echo “Docker instalado correctamente”
 
 “Configurando el archivo sudoers…”
 
-echo “maniana ALL=(root) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-maniana.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*” >> /etc/sudoers
+# echo 'foobar ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 
-echo “tarde ALL=(root) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-tarde.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*” >> /etc/sudoers
-
-echo “maniana ALL=(root) NOPASSWD: /usr/bin/docker-compose -H unix:///var/run/docker-maniana.sock *” >> /etc/sudoers
-
-echo “tarde ALL=(root) NOPASSWD: /usr/bin/docker-compose -H unix:///var/run/docker-tarde.sock *” >> /etc/sudoers
+echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-maniana.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
+echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-tarde.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
+echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-maniana.sock * *' | sudo EDITOR='tee -a' visudo
+echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-tarde.sock * *' | sudo EDITOR='tee -a' visudo
 
 # Esto hay que automatizarlo
 # Para obtener el id de un usuario: echo $(sudo id -u usuario)
