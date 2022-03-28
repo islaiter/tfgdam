@@ -43,6 +43,11 @@ echo “-----------------”
 echo “La configuracion de red se aplico correctamente”
 echo “-----------------”
 
+# Comando para cambiar los permisos por defecto cuando se crea un usuario, de 755 a 700 para que el resto de 
+#usuarios no se puedan meter en el directorio personal de otros usuarios
+
+sudo sed -i "s/DIR_MODE=0755/DIR_MODE=0700/g" /etc/adduser.conf
+
 # Creamos los usuarios, con contraseña
 
 echo “Creando usuarios…”
