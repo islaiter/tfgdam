@@ -138,53 +138,51 @@ echo “Creando y configurando archivos para los sockets de docker…”
 #
 sudo cp /lib/systemd/system/docker.service /lib/systemd/system/docker.service.copy
 
+cat > etc/systemd/system/docker@.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
-Documentation=https://docs.docker.com
-After=network-online.target docker.socket firewalld.service containerd.service
-Wants=network-online.target
-Requires=docker.socket containerd.service
+Documentation=http://docs.docker.com
+After=network.target docker-containerd.service
+Wants=docker-storage-setup.service
+Requires=docker-containerd.service rhel-push-plugin.socket registries.service
 
 [Service]
 Type=notify
-# the default is not to use systemd for cgroups because the delegate issues still
-# exists and systemd currently does not support the cgroup feature set required
-# for containers run by docker
-ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+EnvironmentFile=/run/containers/registries.conf
+EnvironmentFile=-/etc/sysconfig/docker
+EnvironmentFile=-/etc/sysconfig/docker-storage
+EnvironmentFile=-/etc/sysconfig/docker-network
+Environment=GOTRACEBACK=crash
+ExecStart=/usr/bin/dockerd-current \
+          --add-runtime oci=/usr/libexec/docker/docker-runc-current \
+          --default-runtime=oci \
+          --authorization-plugin=rhel-push-plugin \
+          --containerd /run/containerd.sock \
+          --exec-opt native.cgroupdriver=systemd \
+          --userland-proxy-path=/usr/libexec/docker/docker-proxy-current \
+          --init-path=/usr/libexec/docker/docker-init-current \
+          --seccomp-profile=/etc/docker/seccomp.json \
+          --userns-remap %i \
+          --host unix:///var/run/docker-%i.sock \
+          --pidfile /var/run/docker-%i.pid \
+          $OPTIONS \
+          $DOCKER_STORAGE_OPTIONS \
+          $DOCKER_NETWORK_OPTIONS \
+          $ADD_REGISTRY \
+          $BLOCK_REGISTRY \
+          $INSECURE_REGISTRY \
+          $REGISTRIES
 ExecReload=/bin/kill -s HUP $MAINPID
-TimeoutSec=0
-RestartSec=2
-Restart=always
-
-# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
-# Both the old, and new location are accepted by systemd 229 and up, so using the old location
-# to make them work for either version of systemd.
-StartLimitBurst=3
-
-# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
-# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
-# this option work for either version of systemd.
-StartLimitInterval=60s
-
-# Having non-zero Limit*s causes performance problems due to accounting overhead
-# in the kernel. We recommend using cgroups to do container-local accounting.
-LimitNOFILE=infinity
-LimitNPROC=infinity
+TasksMax=8192
+LimitNOFILE=1048576
+LimitNPROC=1048576
 LimitCORE=infinity
-
-# Comment TasksMax if your systemd version does not support it.
-# Only systemd 226 and above support this option.
-TasksMax=infinity
-
-# set delegate yes so that systemd does not reset the cgroups of docker containers
-Delegate=yes
-
-# kill only the docker process, not all processes in the cgroup
-KillMode=process
-OOMScoreAdjust=-500
+TimeoutStartSec=0
+Restart=on-abnormal
 
 [Install]
 WantedBy=multi-user.target
+EOF
 
 echo “Archivos de sockets docker configurados correctamente”
 
