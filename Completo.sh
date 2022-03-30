@@ -76,7 +76,7 @@ echo “Usuarios creados correctamente”
 
 echo “Instalando docker…”
 
-sudo apt-get install \
+sudo apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
@@ -89,7 +89,7 @@ echo \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 echo “Docker instalado correctamente”
 
@@ -133,57 +133,13 @@ echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subgid
 echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subgid
 
 echo “subgid configurado correctamente”
-echo “Creando y configurando archivo para el socket de docker…”
+echo “Creando y configurando archivos para los sockets de docker…”
 
-touch /etc/systemd/system/docker@.service
+#
+sudo cp /lib/systemd/system/docker.service /lib/systemd/system/docker.service.copy
 
-cat > etc/systemd/system/docker@.service <<EOF
-[Unit]
-Description=Docker Application Container Engine
-Documentation=http://docs.docker.com
-After=network.target docker-containerd.service
-Wants=docker-storage-setup.service
-Requires=docker-containerd.service rhel-push-plugin.socket registries.service
 
-[Service]
-Type=notify
-EnvironmentFile=/run/containers/registries.conf
-EnvironmentFile=-/etc/sysconfig/docker
-EnvironmentFile=-/etc/sysconfig/docker-storage
-EnvironmentFile=-/etc/sysconfig/docker-network
-Environment=GOTRACEBACK=crash
-ExecStart=/usr/bin/dockerd-current \
-          --add-runtime oci=/usr/libexec/docker/docker-runc-current \
-          --default-runtime=oci \
-          --authorization-plugin=rhel-push-plugin \
-          --containerd /run/containerd.sock \
-          --exec-opt native.cgroupdriver=systemd \
-          --userland-proxy-path=/usr/libexec/docker/docker-proxy-current \
-          --init-path=/usr/libexec/docker/docker-init-current \
-          --seccomp-profile=/etc/docker/seccomp.json \
-          --userns-remap %i \
-          --host unix:///var/run/docker-%i.sock \
-          --pidfile /var/run/docker-%i.pid \
-          $OPTIONS \
-          $DOCKER_STORAGE_OPTIONS \
-          $DOCKER_NETWORK_OPTIONS \
-          $ADD_REGISTRY \
-          $BLOCK_REGISTRY \
-          $INSECURE_REGISTRY \
-          $REGISTRIES
-ExecReload=/bin/kill -s HUP $MAINPID
-TasksMax=8192
-LimitNOFILE=1048576
-LimitNPROC=1048576
-LimitCORE=infinity
-TimeoutStartSec=0
-Restart=on-abnormal
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-echo “Archivo de socket docker rellenado correctamente”
+echo “Archivos de sockets docker configurados correctamente”
 
 echo “Aplicando cambio a dockerd”
 
