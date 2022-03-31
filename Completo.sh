@@ -95,7 +95,7 @@ echo “Docker instalado correctamente”
 
 # Ahora queremos configurar el namespace para distintos sockets
 
-“Empezando a configurar la seguridad de docker…”
+“Configurando la seguridad de docker…”
 
 “Configurando el archivo sudoers…”
 
@@ -121,7 +121,6 @@ echo “Configurando el archivo subuid…”
 echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subuid
 echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subuid
 
-
 echo “subuid configurado correctamente”
 
 echo “Configurando el archivo subgid…”
@@ -133,58 +132,158 @@ echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subgid
 echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subgid
 
 echo “subgid configurado correctamente”
-echo “Creando y configurando archivos para los sockets de docker…”
+echo “Creando y configurando archivos para los sockets de docker”
 
 #
 sudo cp /lib/systemd/system/docker.service /lib/systemd/system/docker.service.copy
+touch /lib/systemd/system/docker-maniana.service
+touch /lib/systemd/system/docker-tarde.service
 
-cat > etc/systemd/system/docker@.service <<EOF
+cat > /lib/systemd/system/docker.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
-Documentation=http://docs.docker.com
-After=network.target docker-containerd.service
-Wants=docker-storage-setup.service
-Requires=docker-containerd.service rhel-push-plugin.socket registries.service
-
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service
+Wants=network-online.target
+Requires=docker.socket containerd.service
 [Service]
 Type=notify
-EnvironmentFile=/run/containers/registries.conf
-EnvironmentFile=-/etc/sysconfig/docker
-EnvironmentFile=-/etc/sysconfig/docker-storage
-EnvironmentFile=-/etc/sysconfig/docker-network
-Environment=GOTRACEBACK=crash
-ExecStart=/usr/bin/dockerd-current \
-          --add-runtime oci=/usr/libexec/docker/docker-runc-current \
-          --default-runtime=oci \
-          --authorization-plugin=rhel-push-plugin \
-          --containerd /run/containerd.sock \
-          --exec-opt native.cgroupdriver=systemd \
-          --userland-proxy-path=/usr/libexec/docker/docker-proxy-current \
-          --init-path=/usr/libexec/docker/docker-init-current \
-          --seccomp-profile=/etc/docker/seccomp.json \
-          --userns-remap %i \
-          --host unix:///var/run/docker-%i.sock \
-          --pidfile /var/run/docker-%i.pid \
-          $OPTIONS \
-          $DOCKER_STORAGE_OPTIONS \
-          $DOCKER_NETWORK_OPTIONS \
-          $ADD_REGISTRY \
-          $BLOCK_REGISTRY \
-          $INSECURE_REGISTRY \
-          $REGISTRIES
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+# ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+#ExecStart=
+#ExecStart=/usr/bin/dockerd
+ExecStart=/usr/bin/dockerd \
+          --host unix:///var/run/docker.sock \
+          --pidfile /var/run/docker.pid
 ExecReload=/bin/kill -s HUP $MAINPID
-TasksMax=8192
-LimitNOFILE=1048576
-LimitNPROC=1048576
+TimeoutSec=0
+RestartSec=2
+Restart=always
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
 LimitCORE=infinity
-TimeoutStartSec=0
-Restart=on-abnormal
-
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+OOMScoreAdjust=-500
 [Install]
 WantedBy=multi-user.target
 EOF
 
-echo “Archivos de sockets docker configurados correctamente”
+echo "Docker prueba"
+
+cat > /lib/systemd/system/docker-maniana.service <<EOF
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service
+Wants=network-online.target
+Requires=docker.socket containerd.service
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+# ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+#ExecStart=
+#ExecStart=/usr/bin/dockerd
+ExecStart=/usr/bin/dockerd \
+          --userns-remap maniana \
+          --host unix:///var/run/docker-maniana.sock \
+          --pidfile /var/run/docker-maniana.pid
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+OOMScoreAdjust=-500
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /lib/systemd/system/docker-tarde.service <<EOF
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service
+Wants=network-online.target
+Requires=docker.socket containerd.service
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+# ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+#ExecStart=
+#ExecStart=/usr/bin/dockerd
+ExecStart=/usr/bin/dockerd \
+          --userns-remap tarde \
+          --host unix:///var/run/docker-tarde.sock \
+          --pidfile /var/run/docker-tarde.pid
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+OOMScoreAdjust=-500
+[Install]
+WantedBy=multi-user.target
+EOF
+echo "Archivos de sockets para docker configurados correctamente"
 
 echo “Aplicando cambio a dockerd”
 
@@ -195,12 +294,15 @@ echo “Cambios aplicados con exito”
 
 echo “Configurando el archivo bashrc…”
 
-echo “alias docker="sudo docker -H unix:///var/run/docker-$(whoami).sock"” >> ~/.bashrc
+cat >> /home/maniana/.bashrc <<EOF
+alias docker="sudo docker -H unix:///var/run/docker-maniana.sock"
+EOF
 
-source ~/.bashrc
+cat >> /home/tarde/.bashrc <<EOF
+alias docker="sudo docker -H unix:///var/run/docker-tarde.sock"
+EOF
+
 
 echo “Archivo bashrc configurado correctamente”
-
-# systemctl start docker@USER.service → no es necesario de momento
 
 echo “Ya hemos terminado de configurar todo”
