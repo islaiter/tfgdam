@@ -317,4 +317,9 @@ echo “Dando permisos a la carpeta de directorios de docker”
 chmod 755 /var/lib/docker
 echo “Permisos de docker configurados correctamente”
 
+echo “Instalador Docker compose”
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+echo “Docker compose instalado correctamente”
+
 echo “Ya hemos terminado de configurar todo”
