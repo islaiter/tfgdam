@@ -308,6 +308,8 @@ echo “Automatizando los servicios para que se ejecuten al iniciarse la maquina
 
 systemctl enable docker-maniana
 systemctl enable docker-tarde
+systemctl start docker-maniana
+systemctl start docker-tarde
 
 echo “Servicios automatizados correctamente”
 
