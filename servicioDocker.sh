@@ -161,10 +161,13 @@ echo “Cambios aplicados con exito”
 
 echo “Configurando el archivo bashrc…”
 
-echo "alias docker="sudo docker -H unix:///var/run/docker-maniana.sock"" | sudo tee -a /home/maniana/.bashrc
+cat >> /home/maniana/.bashrc <<EOF
+alias docker="sudo docker -H unix:///var/run/docker-maniana.sock"
+EOF
 
-
-echo "alias docker="sudo docker -H unix:///var/run/docker-tarde.sock"" | sudo tee -a /home/tarde/.bashrc
+cat >> /home/tarde/.bashrc <<EOF
+alias docker="sudo docker -H unix:///var/run/docker-tarde.sock"
+EOF
 
 
 echo “Archivo bashrc configurado correctamente”
