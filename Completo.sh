@@ -313,4 +313,8 @@ systemctl start docker-tarde
 
 echo “Servicios automatizados correctamente”
 
+echo “Dando permisos a la carpeta de directorios de docker”
+chmod 755 /var/lib/docker
+echo “Permisos de docker configurados correctamente”
+
 echo “Ya hemos terminado de configurar todo”
