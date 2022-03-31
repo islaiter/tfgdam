@@ -302,7 +302,9 @@ cat >> /home/tarde/.bashrc <<EOF
 alias docker="sudo docker -H unix:///var/run/docker-tarde.sock"
 EOF
 
-
 echo “Archivo bashrc configurado correctamente”
+
+echo “Automatizando los servicios para que se ejecuten al iniciarse la maquina”
+echo “Servicios automatizados correctamente”
 
 echo “Ya hemos terminado de configurar todo”
