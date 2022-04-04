@@ -11,6 +11,10 @@ net user maniana tarde1234 /ADD
 
 wmic useraccount get name
 
+:: Queremos ahora descargar y actualizar Windows
+
+UsoClient ScanInstallWait
+
 :: Queremos ahora por powershell instalar el modulo de las actualizaciones de Windows
 
 powershell -Command "& {Install-Module PSWindowsUpdate}"
@@ -18,3 +22,4 @@ powershell -Command "& {Install-Module PSWindowsUpdate}"
 :: Eliminamos la necesidad de la configuracion por defecto de explorer, para que no fallen los comandos despues
 
 powershell -Command "& {Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main' -Name "DisableFirstRunCustomize" -Value 2}"
+
