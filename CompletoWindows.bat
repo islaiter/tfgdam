@@ -25,4 +25,5 @@ powershell -Command "& {Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Interne
 
 :: Añadimos la descarga de winget para obtener aplicaciones de windows store
 
-Start-BitsTransfer -Source 'https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'  -Destination "C:\Users\admin\Desktop\winget.msixbundle";
+powershell -Command "& {Start-BitsTransfer -Source 'https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'  -Destination "C:\Users\admin\Desktop\winget.msixbundle";
+}"
