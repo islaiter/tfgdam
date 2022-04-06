@@ -70,6 +70,9 @@ sudo chsh -s /bin/bash tarde
 sudo gpasswd -a maniana docker
 sudo gpasswd -a tarde docker
 
+sudo chmod 700 -R /home/maniana
+sudo chmod 700 -R /home/tarde
+
 echo “Usuarios creados correctamente”
 
 # Ahora queremos instalar docker
