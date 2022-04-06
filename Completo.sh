@@ -73,6 +73,10 @@ sudo gpasswd -a tarde docker
 sudo chmod 700 -R /home/maniana
 sudo chmod 700 -R /home/tarde
 
+# Configurando xhost para que funcione cuando se bootea el SO
+
+echo "xhost +" | sudo tee -a /etc/profile
+
 echo “Usuarios creados correctamente”
 
 # Ahora queremos instalar docker
