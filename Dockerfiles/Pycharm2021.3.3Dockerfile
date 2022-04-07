@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get upgrade -y \
   && useradd -ms /bin/bash developer
 
-ARG pycharm_source=https://download.jetbrains.com/python/pycharm-community-${PYCHARM_BUILD}.tar.gz
+ARG pycharm_source=https://download-cdn.jetbrains.com/python/pycharm-professional-2021.3.3.tar.gz
 
 ARG pycharm_local_dir=.PyCharmCE${PYCHARM_VERSION}
 
