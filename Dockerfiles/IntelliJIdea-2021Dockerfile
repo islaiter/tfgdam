@@ -8,10 +8,11 @@ RUN  \
   gcc git openssh-client less \
   libxtst-dev libxext-dev libxrender-dev libfreetype6-dev \
   libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 \
+  && apt-get upgrade -y \
   && rm -rf /var/lib/apt/lists/* \
   && useradd -ms /bin/bash developer
 
-ARG idea_source=https://download.jetbrains.com/idea/ideaIC-${IDEA_BUILD}.tar.gz
+ARG idea_source=https://download-cdn.jetbrains.com/idea/ideaIC-${IDEA_BUILD}.tar.gz
 ARG idea_local_dir=.IdeaIC${IDEA_VERSION}
 
 WORKDIR /opt/idea
