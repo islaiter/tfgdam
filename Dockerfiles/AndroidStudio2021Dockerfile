@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libglu1-mesa libgl1-mesa-dri mesa-utils libpci3 pciutils usbutils file \
   && rm -rf /var/lib/apt/lists/* \
   && useradd -ms /bin/bash developer \
-  && apt-get upgrade -y
+  && apt-get upgrade -y \
 # required for the developer user to access /dev/kvm
   && adduser developer root
 
