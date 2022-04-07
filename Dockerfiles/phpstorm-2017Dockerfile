@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y software-properties-common python-softw
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/*
 
-RUN useradd -m -s /bin/bash developer \
-    && mkdir /home/developer/.PhpStorm2017.1 \
-    && touch /home/developer/.PhpStorm2017.1/.keep \
-    && chown -R developer.developer /home/developer \
+RUN useradd -m -s /bin/bash $(whoami) \
+    && mkdir /home/$(whoami)/.PhpStorm2017.1 \
+    && touch /home/$(whoami)/.PhpStorm2017.1/.keep \
+    && chown -R $(whoami).$(whoami) /home/$(whoami) \
     && mkdir /opt/phpstorm \
     && wget -O - https://download.jetbrains.com/webide/PhpStorm-2017.1.tar.gz | tar xzf - --strip-components=1 -C "/opt/phpstorm"
 
@@ -27,6 +27,6 @@ RUN wget -c http://static.phpmd.org/php/latest/phpmd.phar -O /usr/bin/phpmd.phar
 RUN pear install PHP_CodeSniffer
 RUN npm install -g bower
 
-USER developer
-VOLUME /home/developer/.PhpStorm2017.1
+USER $(whoami)
+VOLUME /home/$(whoami)/.PhpStorm2017.1
 CMD /opt/phpstorm/bin/phpstorm.sh
