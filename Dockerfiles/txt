@@ -1,0 +1,18 @@
+sudo docker run \
+  --privileged \
+  -e DISPLAY=${DISPLAY} \
+  --device /dev/dri \
+  --device /dev/video0 \
+  --device /dev/snd \
+  --device /dev/kvm \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v /dev/bus/usb:/dev/bus/usb \
+  -v /usr/share/X11/xkb:/usr/share/X11/xkb:ro \
+  -v ~/.AndroidStudio:/home/developer/.AndroidStudio \
+  -v ~/.AndroidStudio.android:/home/developer/.android \
+  -v ~/.AndroidStudio.java:/home/developer/.java \
+  -v ~/.AndroidStudio.gradle:/home/developer/.gradle \
+  -v ~/.AndroidStudio.sdk:/home/developer/Android/Sdk \
+  -v ~/Project:/home/developer/Project \
+  --name androidstudio-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
+android
