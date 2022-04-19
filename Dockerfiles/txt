@@ -20,7 +20,6 @@ android
 sudo docker run \
   -e DISPLAY=${DISPLAY} \
   --device /dev/dri \
-  --device /dev/video0 \
   --device /dev/snd \
   --device /dev/kvm \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
