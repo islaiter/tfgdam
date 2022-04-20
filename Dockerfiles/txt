@@ -17,7 +17,9 @@ sudo docker run \
   --name androidstudio-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
 android
 
-sudo docker run \
+Para usuarios mañana/tarde (o dam/daw)
+
+docker run \
   -e DISPLAY=${DISPLAY} \
   --device /dev/dri \
   --device /dev/snd \
