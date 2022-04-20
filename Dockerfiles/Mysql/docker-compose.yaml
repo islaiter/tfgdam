@@ -1,0 +1,30 @@
+version: '3'
+ 
+services:
+  db:
+    image: mysql:8
+    container_name: mysql-8
+    environment:
+    # Los siguientes 4 campos se pueden personalizar como se quieran
+      MYSQL_ROOT_PASSWORD: admin1234
+      MYSQL_DATABASE: basedatos
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: usuario1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8080:80
+volumes:
+  dbdata:
