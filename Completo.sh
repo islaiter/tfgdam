@@ -108,10 +108,10 @@ echo “Docker instalado correctamente”
 
 # echo 'foobar ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 
-echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-dam.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
-echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-daw.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
-echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-dam.sock * *' | sudo EDITOR='tee -a' visudo
-echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-daw.sock * *' | sudo EDITOR='tee -a' visudo
+echo 'dam ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-dam.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
+echo 'daw ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-daw.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
+echo 'dam ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-dam.sock * *' | sudo EDITOR='tee -a' visudo
+echo 'daw ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-daw.sock * *' | sudo EDITOR='tee -a' visudo
 
 # Esto hay que automatizarlo
 # Para obtener el id de un usuario: echo $(sudo id -u usuario)
@@ -122,18 +122,18 @@ echo “Archivo sudoers configurado correctamente”
 echo “Configurando el archivo subuid…”
 
 
-#echo “maniana:165536:65536” >> /etc/subuid
-#echo “tarde:231072:65536” >> /etc/subuid
+#echo “dam:165536:65536” >> /etc/subuid
+#echo “daw:231072:65536” >> /etc/subuid
 
-echo "dam:$(sudo id -g maniana):1" | sudo tee -a /etc/subuid
-echo "daw:$(sudo id -g tarde):1" | sudo tee -a /etc/subuid
+echo "dam:$(sudo id -g dam):1" | sudo tee -a /etc/subuid
+echo "daw:$(sudo id -g daw):1" | sudo tee -a /etc/subuid
 
 echo “subuid configurado correctamente”
 
 echo “Configurando el archivo subgid…”
 
-#echo “maniana:165536:65536” >> /etc/subgid 
-#echo “tarde:231072:65536” >> /etc/subgid
+#echo “dam:165536:65536” >> /etc/subgid 
+#echo “daw:231072:65536” >> /etc/subgid
 
 echo "dam:$(sudo id -g dam):1" | sudo tee -a /etc/subgid
 echo "daw:$(sudo id -g daw):1" | sudo tee -a /etc/subgid
@@ -195,7 +195,7 @@ EOF
 
 echo "Docker prueba"
 
-cat > /lib/systemd/system/docker-maniana.service <<EOF
+cat > /lib/systemd/system/docker-dam.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
@@ -243,7 +243,7 @@ OOMScoreAdjust=-500
 WantedBy=multi-user.target
 EOF
 
-cat > /lib/systemd/system/docker-tarde.service <<EOF
+cat > /lib/systemd/system/docker-daw.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
