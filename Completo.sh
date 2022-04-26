@@ -54,24 +54,24 @@ echo “Creando usuarios…”
 
 # Creando los usuarios con useradd en vez de con adduser crea los usuarios para que sean compatibles con Samba por si hiciese falta por lo que sea, que lo dudo
 
-sudo useradd -m -p maniana1234 maniana
-sudo useradd -m -p tarde1234 tarde
+sudo useradd -m -p dam1234 dam
+sudo useradd -m -p daw1234 daw
 
 # Le asignamos contraseña en linux, ya que los creamos compatibles con samba
 
-sudo echo "maniana:maniana1234" | sudo chpasswd
-sudo echo "tarde:tarde1234" | sudo chpasswd
+sudo echo "dam:dam1234" | sudo chpasswd
+sudo echo "daw:daw1234" | sudo chpasswd
 
-sudo chsh -s /bin/bash maniana
-sudo chsh -s /bin/bash tarde
+sudo chsh -s /bin/bash dam
+sudo chsh -s /bin/bash daw
 
 # Añadimos los usuarios al grupo docker para que ejecuten comandos
 
-sudo gpasswd -a maniana docker
-sudo gpasswd -a tarde docker
+sudo gpasswd -a dam docker
+sudo gpasswd -a daw docker
 
-sudo chmod 700 -R /home/maniana
-sudo chmod 700 -R /home/tarde
+sudo chmod 700 -R /home/dam
+sudo chmod 700 -R /home/daw
 
 # Configurando xhost para que funcione cuando se bootea el SO
 
@@ -108,10 +108,10 @@ echo “Docker instalado correctamente”
 
 # echo 'foobar ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 
-echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-maniana.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
-echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-tarde.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
-echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-maniana.sock * *' | sudo EDITOR='tee -a' visudo
-echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-tarde.sock * *' | sudo EDITOR='tee -a' visudo
+echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-dam.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
+echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-daw.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
+echo 'maniana ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-dam.sock * *' | sudo EDITOR='tee -a' visudo
+echo 'tarde ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-daw.sock * *' | sudo EDITOR='tee -a' visudo
 
 # Esto hay que automatizarlo
 # Para obtener el id de un usuario: echo $(sudo id -u usuario)
@@ -125,8 +125,8 @@ echo “Configurando el archivo subuid…”
 #echo “maniana:165536:65536” >> /etc/subuid
 #echo “tarde:231072:65536” >> /etc/subuid
 
-echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subuid
-echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subuid
+echo "dam:$(sudo id -g maniana):1" | sudo tee -a /etc/subuid
+echo "daw:$(sudo id -g tarde):1" | sudo tee -a /etc/subuid
 
 echo “subuid configurado correctamente”
 
@@ -135,16 +135,16 @@ echo “Configurando el archivo subgid…”
 #echo “maniana:165536:65536” >> /etc/subgid 
 #echo “tarde:231072:65536” >> /etc/subgid
 
-echo "maniana:$(sudo id -g maniana):1" | sudo tee -a /etc/subgid
-echo "tarde:$(sudo id -g tarde):1" | sudo tee -a /etc/subgid
+echo "dam:$(sudo id -g dam):1" | sudo tee -a /etc/subgid
+echo "daw:$(sudo id -g daw):1" | sudo tee -a /etc/subgid
 
 echo “subgid configurado correctamente”
 echo “Creando y configurando archivos para los sockets de docker”
 
 #
 sudo cp /lib/systemd/system/docker.service /lib/systemd/system/docker.service.copy
-touch /lib/systemd/system/docker-maniana.service
-touch /lib/systemd/system/docker-tarde.service
+touch /lib/systemd/system/docker-dam.service
+touch /lib/systemd/system/docker-daw.service
 
 cat > /lib/systemd/system/docker.service <<EOF
 [Unit]
@@ -211,9 +211,9 @@ Type=notify
 #ExecStart=
 #ExecStart=/usr/bin/dockerd
 ExecStart=/usr/bin/dockerd \
-          --userns-remap maniana \
-          --host unix:///var/run/docker-maniana.sock \
-          --pidfile /var/run/docker-maniana.pid
+          --userns-remap dam \
+          --host unix:///var/run/docker-dam.sock \
+          --pidfile /var/run/docker-dam.pid
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2
@@ -259,9 +259,9 @@ Type=notify
 #ExecStart=
 #ExecStart=/usr/bin/dockerd
 ExecStart=/usr/bin/dockerd \
-          --userns-remap tarde \
-          --host unix:///var/run/docker-tarde.sock \
-          --pidfile /var/run/docker-tarde.pid
+          --userns-remap daw \
+          --host unix:///var/run/docker-daw.sock \
+          --pidfile /var/run/docker-daw.pid
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2
@@ -301,22 +301,22 @@ echo “Cambios aplicados con exito”
 
 echo “Configurando el archivo bashrc…”
 
-cat >> /home/maniana/.bashrc <<EOF
-alias docker="sudo docker -H unix:///var/run/docker-maniana.sock"
+cat >> /home/dam/.bashrc <<EOF
+alias docker="sudo docker -H unix:///var/run/docker-dam.sock"
 EOF
 
-cat >> /home/tarde/.bashrc <<EOF
-alias docker="sudo docker -H unix:///var/run/docker-tarde.sock"
+cat >> /home/daw/.bashrc <<EOF
+alias docker="sudo docker -H unix:///var/run/docker-daw.sock"
 EOF
 
 echo “Archivo bashrc configurado correctamente”
 
 echo “Automatizando los servicios para que se ejecuten al iniciarse la maquina”
 
-systemctl enable docker-maniana
-systemctl enable docker-tarde
-systemctl start docker-maniana
-systemctl start docker-tarde
+systemctl enable docker-dam
+systemctl enable docker-daw
+systemctl start docker-dam
+systemctl start docker-daw
 
 echo “Servicios automatizados correctamente”
 
