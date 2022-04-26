@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-RUN apt-get update && apt-get install -y software-properties-common python-software-properties && add-apt-repository ppa:ondrej/php && apt-get update && \
+RUN apt-get update && apt-get install -y software-properties-common python-software-properties && LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php && apt-get update && \
     apt-get install -y software-properties-common wget git curl && \
     curl -sL https://deb.nodesource.com/setup_5.x | bash - && \
     apt-get update && \
