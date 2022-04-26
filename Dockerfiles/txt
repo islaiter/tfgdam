@@ -34,3 +34,10 @@ docker run \
   -v ~/Project:/home/developer/Project \
   --name androidstudio-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
 android
+
+docker run -it --rm \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ~/.PhpStorm2017.1:/home/developer/.PhpStorm2017.1 \
+        -v ~/Projects:/workspace \
+        phpstorm
