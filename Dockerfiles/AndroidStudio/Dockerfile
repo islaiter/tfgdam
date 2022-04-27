@@ -1,7 +1,5 @@
 FROM debian
 
-LABEL maintainer "Viktor Adam <rycus86@gmail.com>"
-
 RUN apt-get update && apt-get install --no-install-recommends -y \
   gcc git openssh-client less curl ca-certificates zip unzip \
   libxtst-dev libxext-dev libxrender-dev libfreetype6-dev \
