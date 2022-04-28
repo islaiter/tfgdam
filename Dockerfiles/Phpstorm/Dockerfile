@@ -1,19 +1,27 @@
 FROM ubuntu:20.04
 
+RUN apt-get update && apt-get upgrade -y
 
-RUN apt-get update && apt-get install -y software-properties-common && apt --fix-broken install python-pycurl python-apt -y && add-apt-repository ppa:ondrej/php && apt-get update && \
-    apt-get install -y software-properties-common wget git curl && \
+RUN apt-get install -y libgbm-dev\
+&& apt-get install -y libxkbcommon-x11-0
+
+RUN apt-get update && apt-get install -y software-properties-common && apt --fix-broken install python-pycurl python-apt -y && add-apt-repository ppa:ondrej/php \
+    && apt-get update && apt-get install -y software-properties-common wget git curl && \
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get update && \
   # php8.1-recode is now include in pcl since php7.4+ php8.1-json
     apt-get install -y --allow-unauthenticated graphviz phpunit nodejs \
-        php8.1-cli php8.1-dev php8.1-curl php8.1-gd php8.1-gmp  php8.1-ldap php8.1-mysql php8.1-odbc php8.1-pgsql php8.1-pspell php8.1-readline php8.1-sqlite3 php8.1-tidy php8.1-xml php8.1-xmlrpc php8.1-bcmath php8.1-bz2 php8.1-enchant php8.1-imap php8.1-interbase php8.1-intl php8.1-mbstring php8.1-mcrypt php8.1-soap php8.1-sybase php8.1-xsl php8.1-zip php-memcache php-memcached php-pear \
+        php8.1-cli php8.1-dev php8.1-curl php8.1-gd php8.1-gmp  php8.1-ldap php8.1-mysql php8.1-odbc php8.1-pgsql php8.1-pspell php8.1-readline php8.1-sqlite3 php8.1-tidy php8.1-xml php8.1-xmlrpc php8.1-bcmath php8.1-bz2 php8.1-enchant php8.1-imap php8.1-interbase php8.1-intl php8.1-mbstring php8.1-mcrypt php8.1-soap php8.1-sybase php8.1-xsl php8.1-zip php-memcache php8.1-cgi php-memcached php-pear \
         openjdk-8-jre libxext-dev libxrender-dev libxtst-dev && \
     pecl install xdebug && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* \
     && apt-get upgrade -y
+    
+RUN apt update && \ 
+    apt-get install -y php8.1 && \
+    php --version
 
 RUN useradd -m -s /bin/bash developer \
     && mkdir /home/developer/.PhpStorm2022.1 \
