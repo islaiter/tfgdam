@@ -1,0 +1,30 @@
+docker run -it \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ~/.PhpStorm2017.1:/home/developer/.PhpStorm2017.1 \
+        -v ~/Projects:/workspace \
+        phpstorm
+
+ docker run -it  \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ~/.PhpStorm2022.1:/home/developer/.PhpStorm2022.1 \
+        -v ~/Projects:/workspace \
+        -v /usr/bin/firefox/:/usr/bin/firefox/ \
+        phpstorm
+
+ sudo docker run -it  \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ~/.PhpStorm2022.1:/home/developer/.PhpStorm2022.1 \
+        -v ~/Projects:/workspace \
+        -v /usr/bin/firefox/:/usr/bin/firefox/ \
+        phpstormtest
+        
+sudo docker run -it  \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ~/.PhpStorm2022.1:/home/developer/.PhpStorm2022.1 \
+        -v ~/Projects:/workspace \
+        -v /usr/bin/firefox/:/usr/bin/firefox/ \
+        phpstorm
