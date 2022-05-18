@@ -113,17 +113,10 @@ echo 'daw ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-daw
 echo 'dam ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-dam.sock * *' | sudo EDITOR='tee -a' visudo
 echo 'daw ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-daw.sock * *' | sudo EDITOR='tee -a' visudo
 
-# Esto hay que automatizarlo
-# Para obtener el id de un usuario: echo $(sudo id -u usuario)
-# Para obtener el grupo de un usuario: echo $(sudo id -g usuario)
-
 echo “Archivo sudoers configurado correctamente”
 
 echo “Configurando el archivo subuid…”
 
-
-#echo “dam:165536:65536” >> /etc/subuid
-#echo “daw:231072:65536” >> /etc/subuid
 
 echo "dam:$(sudo id -g dam):1" | sudo tee -a /etc/subuid
 echo "daw:$(sudo id -g daw):1" | sudo tee -a /etc/subuid
@@ -132,13 +125,11 @@ echo “subuid configurado correctamente”
 
 echo “Configurando el archivo subgid…”
 
-#echo “dam:165536:65536” >> /etc/subgid 
-#echo “daw:231072:65536” >> /etc/subgid
-
 echo "dam:$(sudo id -g dam):1" | sudo tee -a /etc/subgid
 echo "daw:$(sudo id -g daw):1" | sudo tee -a /etc/subgid
 
 echo “subgid configurado correctamente”
+
 echo “Creando y configurando archivos para los sockets de docker”
 
 #
@@ -155,12 +146,6 @@ Wants=network-online.target
 Requires=docker.socket containerd.service
 [Service]
 Type=notify
-# the default is not to use systemd for cgroups because the delegate issues still
-# exists and systemd currently does not support the cgroup feature set required
-# for containers run by docker
-# ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
-#ExecStart=
-#ExecStart=/usr/bin/dockerd
 ExecStart=/usr/bin/dockerd \
           --host unix:///var/run/docker.sock \
           --pidfile /var/run/docker.pid
@@ -168,25 +153,13 @@ ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2
 Restart=always
-# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
-# Both the old, and new location are accepted by systemd 229 and up, so using the old location
-# to make them work for either version of systemd.
 StartLimitBurst=3
-# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
-# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
-# this option work for either version of systemd.
 StartLimitInterval=60s
-# Having non-zero Limit*s causes performance problems due to accounting overhead
-# in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNOFILE=infinity
 LimitNPROC=infinity
-LimitCORE=infinity
-# Comment TasksMax if your systemd version does not support it.
-# Only systemd 226 and above support this option.
+LimitCORE=infinity.
 TasksMax=infinity
-# set delegate yes so that systemd does not reset the cgroups of docker containers
 Delegate=yes
-# kill only the docker process, not all processes in the cgroup
 KillMode=process
 OOMScoreAdjust=-500
 [Install]
@@ -204,12 +177,6 @@ Wants=network-online.target
 Requires=docker.socket containerd.service
 [Service]
 Type=notify
-# the default is not to use systemd for cgroups because the delegate issues still
-# exists and systemd currently does not support the cgroup feature set required
-# for containers run by docker
-# ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
-#ExecStart=
-#ExecStart=/usr/bin/dockerd
 ExecStart=/usr/bin/dockerd \
           --userns-remap dam \
           --host unix:///var/run/docker-dam.sock \
@@ -218,25 +185,13 @@ ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2
 Restart=always
-# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
-# Both the old, and new location are accepted by systemd 229 and up, so using the old location
-# to make them work for either version of systemd.
 StartLimitBurst=3
-# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
-# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
-# this option work for either version of systemd.
 StartLimitInterval=60s
-# Having non-zero Limit*s causes performance problems due to accounting overhead
-# in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNOFILE=infinity
 LimitNPROC=infinity
 LimitCORE=infinity
-# Comment TasksMax if your systemd version does not support it.
-# Only systemd 226 and above support this option.
 TasksMax=infinity
-# set delegate yes so that systemd does not reset the cgroups of docker containers
 Delegate=yes
-# kill only the docker process, not all processes in the cgroup
 KillMode=process
 OOMScoreAdjust=-500
 [Install]
@@ -252,12 +207,6 @@ Wants=network-online.target
 Requires=docker.socket containerd.service
 [Service]
 Type=notify
-# the default is not to use systemd for cgroups because the delegate issues still
-# exists and systemd currently does not support the cgroup feature set required
-# for containers run by docker
-# ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
-#ExecStart=
-#ExecStart=/usr/bin/dockerd
 ExecStart=/usr/bin/dockerd \
           --userns-remap daw \
           --host unix:///var/run/docker-daw.sock \
@@ -266,30 +215,19 @@ ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2
 Restart=always
-# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
-# Both the old, and new location are accepted by systemd 229 and up, so using the old location
-# to make them work for either version of systemd.
 StartLimitBurst=3
-# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
-# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
-# this option work for either version of systemd.
 StartLimitInterval=60s
-# Having non-zero Limit*s causes performance problems due to accounting overhead
-# in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNOFILE=infinity
 LimitNPROC=infinity
 LimitCORE=infinity
-# Comment TasksMax if your systemd version does not support it.
-# Only systemd 226 and above support this option.
 TasksMax=infinity
-# set delegate yes so that systemd does not reset the cgroups of docker containers
 Delegate=yes
-# kill only the docker process, not all processes in the cgroup
 KillMode=process
 OOMScoreAdjust=-500
 [Install]
 WantedBy=multi-user.target
 EOF
+
 echo "Archivos de sockets para docker configurados correctamente"
 
 echo “Aplicando cambio a dockerd”
