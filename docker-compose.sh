@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cat /lib/systemd/system/docker-compose.yml
 cat /lib/systemd/system/docker-compose-dam.yml
 cat /lib/systemd/system/docker-compose-daw.yml
@@ -12,7 +14,9 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=true
 ExecStart=/usr/local/bin/docker-compose up 
-ExecStop=/usr/local/bin/docker-compose down
+ExecStart=/usr/bin/dockerd \
+          --host unix:///var/run/docker.sock \
+          --pidfile /var/run/docker.pid
 
 [Install]
 WantedBy=multi-user.target
