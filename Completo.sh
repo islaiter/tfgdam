@@ -110,8 +110,8 @@ echo “Docker instalado correctamente”
 
 echo 'dam ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-dam.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
 echo 'daw ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker -H unix\:///var/run/docker-daw.sock *, ! /usr/bin/docker *--priviledged*, ! /usr/bin/docker *host*' | sudo EDITOR='tee -a' visudo
-echo 'dam ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-dam.sock * *' | sudo EDITOR='tee -a' visudo
-echo 'daw ALL=(ALL:ALL) NOPASSWD: /usr/bin/docker-compose -H unix\:///var/run/docker-daw.sock * *' | sudo EDITOR='tee -a' visudo
+echo 'dam ALL=(root) NOPASSWD: /usr/local/bin/docker-compose -H unix\:///var/run/docker-dam.sock *' | sudo EDITOR='tee -a' visudo
+echo 'daw ALL=(root) NOPASSWD: /usr/local/bin/docker-compose -H unix\:///var/run/docker-daw.sock *' | sudo EDITOR='tee -a' visudo
 
 echo “Archivo sudoers configurado correctamente”
 
@@ -241,10 +241,12 @@ echo “Configurando el archivo bashrc…”
 
 cat >> /home/dam/.bashrc <<EOF
 alias docker="sudo docker -H unix:///var/run/docker-dam.sock"
+alias docker-compose="sudo docker-compose -H unix\:///var/run/docker-dam.sock"
 EOF
 
 cat >> /home/daw/.bashrc <<EOF
 alias docker="sudo docker -H unix:///var/run/docker-daw.sock"
+alias docker-compose="sudo docker-compose -H unix\:///var/run/docker-daw.sock"
 EOF
 
 echo “Archivo bashrc configurado correctamente”
