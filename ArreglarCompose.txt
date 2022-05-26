@@ -1,0 +1,27 @@
+Para arreglar el Docker compose hacer lo siguiente:
+
+1 - Iniciamos sesion como sudo (sudo su)
+2 - Ejecutamos el comando visudo
+3 - Eliminamos las dos ultimas lineas (las que dan permiso al docker-compose y las sustituimos por:
+
+dam ALL=(root) NOPASSWD: /usr/local/bin/docker-compose -H unix\:///var/run/docker-dam.sock *
+daw ALL=(root) NOPASSWD: /usr/local/bin/docker-compose -H unix\:///var/run/docker-daw.sock *
+
+4 - Guardamos el archivo
+5 - Editamos el archivo bashrc (/home/dam/.bashrc) de dam y añadimos en la ultima linea lo siguiente:
+
+alias docker-compose="sudo docker-compose -H unix\:///var/run/docker-dam.sock"
+
+6 - Guardamos y ahora editamos el archivo bashrc de daw (/home/daw/.bashrc) y añadimos:
+
+alias docker-compose="sudo docker-compose -H unix\:///var/run/docker-daw.sock"
+
+7 - Guardamos y tenemos dos opciones ahora:
+
+a - Reiniciamos el equipo
+b - En el usuario dam ejecutamos: source ~/.bashrc y dentro de daw lo mismo: source ~/.bashrc
+
+Nota: Si por lo que sea obtenemos el error de SHIM OCI RUNTIME:
+
+1 - Ejecutamos lo siguiente desde admin o root (no desde dam o daw): sudo systemctl stop docker-dam y luego sudo systemctl start docker-dam
+2 - Lo mismo de arriba pero para daw
