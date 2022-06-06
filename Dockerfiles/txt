@@ -1,3 +1,5 @@
+AndroidStudio para sudo:
+
 sudo docker run \
   --privileged \
   -e DISPLAY=${DISPLAY} \
@@ -17,7 +19,7 @@ sudo docker run \
   --name androidstudio-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
 android
 
-Para usuarios mañana/tarde (o dam/daw)
+Android Studio Para usuarios mañana/tarde (o dam/daw)
 
 docker run \
   -e DISPLAY=${DISPLAY} \
@@ -35,9 +37,52 @@ docker run \
   --name androidstudio-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
 android
 
+PHPStorm 2017:
+
 docker run -it --rm \
         -e DISPLAY=$DISPLAY \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ~/.PhpStorm2017.1:/home/developer/.PhpStorm2017.1 \
         -v ~/Projects:/workspace \
         phpstorm
+        
+PHPStorm 2022:
+
+ docker run -it  \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ~/.PhpStorm2022.1:/home/developer/.PhpStorm2022.1 \
+        -v ~/Projects:/workspace \
+        -v /usr/bin/firefox/:/usr/bin/firefox/ \
+        phpstorm
+        
+Pycharm:
+
+sudo docker run  \
+  -e DISPLAY=${DISPLAY} \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v ~/.PyCharm:/home/developer/.PyCharm \
+  -v ~/.PyCharm.java:/home/developer/.java \
+  -v ~/.PyCharm.py2:/usr/local/lib/python2.7 \
+  -v ~/.PyCharm.py3:/usr/local/lib/python3.7 \
+  -v ~/.PyCharm.share:/home/developer/.local/share/JetBrains \
+  -v ~/Project:/home/developer/Project \
+  --name pycharm-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
+pycharm
+
+
+IntelliJIdea
+
+sudo docker run \
+  -e DISPLAY=${DISPLAY} \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v ~/.Idea:/home/developer/.Idea \
+  -v ~/.Idea.java:/home/developer/.java \
+  -v ~/.Idea.maven:/home/developer/.m2 \
+  -v ~/.Idea.gradle:/home/developer/.gradle \
+  -v ~/.Idea.share:/home/developer/.local/share/JetBrains \
+  -v ~/Project:/home/developer/Project \
+  -v ~/IdeaProjects:/home/developer/IdeaProjects \
+  --name idea-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
+intellijprueba
+
