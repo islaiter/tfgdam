@@ -23,7 +23,8 @@ Android Studio Para usuarios mañana/tarde (o dam/daw)
 
 docker run \
   -e DISPLAY=${DISPLAY} \
-  --device /dev/dri \
+  --device /dev/dri \/home/maniana/PycharmProjects
+
   --device /dev/snd \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v /dev/bus/usb:/dev/bus/usb \
@@ -66,7 +67,7 @@ sudo docker run  \
   -v ~/.PyCharm.py2:/usr/local/lib/python2.7 \
   -v ~/.PyCharm.py3:/usr/local/lib/python3.7 \
   -v ~/.PyCharm.share:/home/developer/.local/share/JetBrains \
-  -v ~/Project:/home/developer/Project \
+  -v ~/PycharmProjects:/home/maniana/PycharmProjects \
   --name pycharm-$(head -c 4 /dev/urandom | xxd -p)-$(date +'%Y%m%d-%H%M%S') \
 pycharm
 
