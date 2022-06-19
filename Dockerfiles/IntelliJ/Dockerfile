@@ -21,10 +21,10 @@ RUN curl -fsSL $idea_source -o /opt/idea/installer.tgz \
   && tar --strip-components=1 -xzf installer.tgz \
   && rm installer.tgz
 
-USER developer
-ENV HOME /home/developer
+#USER developer
+#ENV HOME /home/developer
 
-RUN mkdir /home/developer/.Idea \
-  && ln -sf /home/developer/.Idea /home/developer/$idea_local_dir
+#RUN mkdir /home/developer/.Idea \
+#  && ln -sf /home/developer/.Idea /home/developer/$idea_local_dir
 
 CMD [ "/opt/idea/bin/idea.sh" ]
