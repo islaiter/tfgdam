@@ -23,10 +23,10 @@ RUN curl -fsSL $pycharm_source -o /opt/pycharm/installer.tgz \
   && tar --strip-components=1 -xzf installer.tgz \
   && rm installer.tgz
 
-USER maniana
-ENV HOME /home/maniana
+#USER maniana
+#ENV HOME /home/maniana
 
-RUN mkdir /home/maniana/.PyCharm \
-  && ln -sf /home/maniana/.PyCharm /home/maniana/$pycharm_local_dir
+#RUN mkdir /home/maniana/.PyCharm \
+#  && ln -sf /home/maniana/.PyCharm /home/maniana/$pycharm_local_dir
 
 CMD [ "/opt/pycharm/bin/pycharm.sh" ]
