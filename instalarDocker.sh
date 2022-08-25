@@ -1,6 +1,6 @@
 echo “Instalando docker…”
 
-sudo apt-get install \
+sudo apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
